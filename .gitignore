@@ -1,0 +1,72 @@
+# Dependencies
+vendor/
+
+# Environment specific settings
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Logs
+*.log
+logs/
+log/
+
+# Cache
+.cache/
+tmp/
+temp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compiled and temporary PHP files
+*.php~
+*.php.bak
+*.bak
+*.tmp
+
+# Uploads and user content (if any)
+uploads/
+files/
+storage/
+
+# Composer (PHP dependency manager)
+composer.lock  # Note: Sometimes you might want to commit this
+
+# Session files
+sess_*
+
+# Configuration files that might contain sensitive info
+config/config.php
+config/database.php
+database/seeds/
+database/migrations/
+
+# Ignore all .sql files except those in stock-receive directory (since you have SQL files there)
+*.sql
+!stock-receive/*.sql
+
+# Ignore debug/error output
+error_log
+core
+core.*
