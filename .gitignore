@@ -44,6 +44,9 @@ Thumbs.db
 *.php.bak
 *.bak
 *.tmp
+*_test.php
+*_debug.php
+*_temp.php
 
 # Uploads and user content (if any)
 uploads/
