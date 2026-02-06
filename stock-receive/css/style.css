@@ -1,0 +1,321 @@
+/* Ayurvedic Earth Tones Theme for Stock Receive System */
+
+:root {
+    /* Earth tones palette */
+    --earth-green: #8B9F78;      /* Sage green */
+    --earth-brown: #A1887F;      /* Warm brown */
+    --earth-tan: #D7CCC8;        /* Light tan */
+    --earth-beige: #EFEBE0;      /* Soft beige */
+    --earth-olive: #9E9E70;      /* Olive green */
+    --earth-cream: #FFF8E1;      /* Cream */
+    --earth-terracotta: #D7CCC8; /* Terracotta */
+    --earth-sage: #AEC6A9;       /* Sage green */
+    
+    /* Pastel variants */
+    --pastel-green: #C8E6C9;
+    --pastel-brown: #D7CCC8;
+    --pastel-olive: #DCEDC8;
+    --pastel-cream: #FFFDE7;
+    --pastel-terracotta: #FBE9E7;
+    
+    /* Accent colors */
+    --accent-gold: #FFD54F;
+    --accent-coral: #FFAB91;
+    --accent-mint: #A7FFEB;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--earth-cream);
+    color: #333;
+}
+
+.table th {
+    background-color: var(--pastel-green);
+    color: #333;
+}
+
+.table td {
+    background-color: white;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(139, 159, 120, 0.15);
+    border: 1px solid var(--earth-tan);
+    border-radius: 8px;
+    background-color: white;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--earth-green), var(--earth-olive));
+    color: white;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0 !important;
+    border: none;
+}
+
+.form-control {
+    border: 1px solid var(--earth-tan);
+    border-radius: 4px;
+    background-color: var(--earth-cream);
+}
+
+.form-control:focus {
+    border-color: var(--earth-olive);
+    box-shadow: 0 0 0 0.2rem rgba(158, 158, 112, 0.25);
+    background-color: white;
+}
+
+.form-select {
+    border: 1px solid var(--earth-tan);
+    border-radius: 4px;
+    background-color: var(--earth-cream);
+}
+
+.form-select:focus {
+    border-color: var(--earth-olive);
+    box-shadow: 0 0 0 0.2rem rgba(158, 158, 112, 0.25);
+    background-color: white;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--earth-green), var(--earth-olive));
+    border-color: var(--earth-olive);
+    color: white;
+    border-radius: 4px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--earth-olive), var(--earth-green));
+    border-color: var(--earth-green);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--earth-brown);
+    border-color: var(--earth-brown);
+    color: white;
+    border-radius: 4px;
+}
+
+.btn-secondary:hover {
+    background-color: #8D6E63;
+    border-color: #8D6E63;
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--pastel-green);
+    border-color: var(--pastel-green);
+    color: #2E7D32;
+    border-radius: 4px;
+}
+
+.btn-info {
+    background-color: var(--pastel-olive);
+    border-color: var(--pastel-olive);
+    color: #33691E;
+    border-radius: 4px;
+}
+
+.btn-warning {
+    background-color: var(--accent-gold);
+    border-color: var(--accent-gold);
+    color: #F57F17;
+    border-radius: 4px;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--earth-green), var(--earth-olive)) !important;
+    border-bottom: 1px solid var(--earth-tan);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px;
+}
+
+.dropdown-menu {
+    background-color: var(--earth-cream);
+    border: 1px solid var(--earth-tan);
+    border-radius: 8px;
+    box-shadow: 0 0.5rem 1rem rgba(139, 159, 120, 0.15);
+}
+
+.dropdown-item {
+    color: #333;
+}
+
+.dropdown-item:hover {
+    background-color: var(--pastel-green);
+    color: #333;
+}
+
+.alert {
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background-color: var(--pastel-green);
+    border-color: #A5D6A7;
+    color: #2E7D32;
+}
+
+.alert-info {
+    background-color: var(--pastel-olive);
+    border-color: #C5E1A5;
+    color: #33691E;
+}
+
+.alert-warning {
+    background-color: var(--pastel-terracotta);
+    border-color: #FFE0B2;
+    color: #EF6C00;
+}
+
+.alert-danger {
+    background-color: #FFCDD2;
+    border-color: #EF9A9A;
+    color: #C62828;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(139, 159, 120, 0.1);
+}
+
+.report-table th,
+.report-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--earth-tan);
+}
+
+.report-table th {
+    background: linear-gradient(to bottom, var(--pastel-green), var(--earth-tan));
+    font-weight: bold;
+    color: #333;
+}
+
+/* Currency formatting */
+.currency {
+    font-weight: bold;
+    color: var(--earth-olive);
+}
+
+/* Variance indicators */
+.variance-positive {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.variance-negative {
+    color: #F44336;
+    font-weight: bold;
+}
+
+/* Category labels with earth tones */
+.category-label {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    color: white;
+}
+
+.category-label.balm { background-color: var(--earth-olive); }
+.category-label.oil { background-color: var(--earth-brown); }
+.category-label.kwatha { background-color: var(--earth-green); }
+.category-label.paanta { background-color: var(--earth-terracotta); }
+.category-label.churna { background-color: var(--earth-tan); }
+.category-label.tablet { background-color: var(--accent-gold); color: #333; }
+.category-label.syrup { background-color: var(--accent-coral); color: #333; }
+.category-label.cream { background-color: var(--accent-mint); color: #333; }
+
+/* Input fields with earth tones */
+.input-group-text {
+    background-color: var(--earth-tan);
+    border-color: var(--earth-olive);
+    color: #333;
+}
+
+/* Buttons with earth tones */
+.btn-outline-primary {
+    color: var(--earth-olive);
+    border-color: var(--earth-olive);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--earth-olive);
+    color: white;
+}
+
+.btn-outline-success {
+    color: var(--earth-green);
+    border-color: var(--earth-green);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--earth-green);
+    color: white;
+}
+
+.btn-outline-info {
+    color: var(--earth-olive);
+    border-color: var(--earth-olive);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--earth-olive);
+    color: white;
+}
+
+.btn-outline-warning {
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--accent-gold);
+    color: #333;
+}
+
+.btn-outline-danger {
+    color: #EF9A9A;
+    border-color: #EF9A9A;
+}
+
+.btn-outline-danger:hover {
+    background-color: #EF9A9A;
+    color: #333;
+}
+
+/* Footer styling */
+footer {
+    background: linear-gradient(135deg, var(--earth-olive), var(--earth-green));
+    color: white;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
