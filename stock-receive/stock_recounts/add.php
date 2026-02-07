@@ -1,6 +1,7 @@
 <?php
 $page_title = "Add Stock Recount - Stock Receive System";
 include '../config/database.php'; // Include database connection first
+include '../includes/audit_helper.php'; // Include audit helper functions
 include '../includes/header.php'; // Include header from parent directory
 
 $message = '';

@@ -3,6 +3,7 @@ $page_title = "Add Vendor - Stock Receive System";
 include '../config/database.php'; // Include database connection first
 include '../includes/csrf.php'; // Include CSRF protection
 include '../includes/sanitize.php'; // Include sanitization utilities
+include '../includes/audit_helper.php'; // Include audit helper functions
 include '../includes/header.php'; // Include header from parent directory
 
 $message = '';
