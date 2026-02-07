@@ -16,6 +16,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Set session timezone to match application timezone
+$conn->query("SET time_zone = '+05:30'"); // Sri Lanka Standard Time
+
 // Include audit helper
 include_once dirname(__DIR__) . '/includes/audit_helper.php';
 ?>

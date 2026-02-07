@@ -30,9 +30,178 @@ body {
     color: #333;
 }
 
+/* Card styling with earth tones */
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 0.125rem 0.25rem rgba(139, 159, 120, 0.15);
+    border: 1px solid var(--earth-tan);
+    border-radius: 8px;
+}
+
+.card-header {
+    font-weight: bold;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* Table styling with earth tones */
 .table th {
     background-color: var(--pastel-green);
     color: #333;
+    font-weight: bold;
+}
+
+.table td {
+    background-color: white;
+}
+
+/* Form controls with earth tones */
+.form-control, .form-select {
+    border: 1px solid var(--earth-tan);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--earth-olive);
+    box-shadow: 0 0 0 0.2rem rgba(158, 158, 112, 0.25);
+    background-color: white;
+}
+
+/* Button styling with earth tones */
+.btn-primary {
+    background-color: var(--earth-green);
+    border-color: var(--earth-green);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--earth-olive);
+    border-color: var(--earth-olive);
+    color: white;
+}
+
+.btn-outline-primary {
+    color: var(--earth-green);
+    border-color: var(--earth-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--earth-green);
+    border-color: var(--earth-green);
+    color: white;
+}
+
+/* Navigation styling */
+.navbar {
+    background: linear-gradient(135deg, var(--earth-green), var(--earth-olive)) !important;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+/* Alert styling */
+.alert-success {
+    background-color: var(--pastel-green);
+    border-color: #A5D6A7;
+    color: #2E7D32;
+}
+
+.alert-info {
+    background-color: var(--pastel-olive);
+    border-color: #C5E1A5;
+    color: #33691E;
+}
+
+.alert-warning {
+    background-color: var(--pastel-terracotta);
+    border-color: #FFE0B2;
+    color: #EF6C00;
+}
+
+.alert-danger {
+    background-color: #FFCDD2;
+    border-color: #EF9A9A;
+    color: #C62828;
+}
+
+/* Report table styling */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(139, 159, 120, 0.1);
+}
+
+.report-table th,
+.report-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--earth-tan);
+}
+
+.report-table th {
+    background: linear-gradient(to bottom, var(--pastel-green), var(--earth-tan));
+    font-weight: bold;
+    color: #333;
+}
+
+/* Currency formatting */
+.currency {
+    font-weight: bold;
+    color: var(--earth-olive);
+}
+
+/* Variance indicators */
+.variance-positive {
+    color: #2E7D32;
+    font-weight: bold;
+}
+
+.variance-negative {
+    color: #C62828;
+    font-weight: bold;
+}
+
+/* Category labels with earth tones */
+.category-label {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    color: white;
+}
+
+.category-label.balm { background-color: var(--earth-olive); }
+.category-label.oil { background-color: var(--earth-brown); }
+.category-label.kwatha { background-color: var(--earth-green); }
+.category-label.paanta { background-color: var(--earth-terracotta); }
+.category-label.churna { background-color: var(--earth-tan); }
+.category-label.tablet { background-color: var(--accent-gold); color: #333; }
+.category-label.syrup { background-color: var(--accent-coral); color: #333; }
+.category-label.cream { background-color: var(--accent-mint); color: #333; }
+
+/* Input groups */
+.input-group-text {
+    background-color: var(--earth-tan);
+    border-color: var(--earth-olive);
+    color: #333;
+}
+
+/* Footer styling */
+footer {
+    background: linear-gradient(135deg, var(--earth-olive), var(--earth-green));
+    color: white;
+    padding: 1rem 0;
+    margin-top: 2rem;
 }
 
 .table td {

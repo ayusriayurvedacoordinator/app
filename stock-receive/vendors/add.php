@@ -8,28 +8,34 @@ $message_type = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name']);
-    $contact_info = trim($_POST['contact_info']);
+    $phone_number = trim($_POST['phone_number']);
+    $email = trim($_POST['email']);
     $address = trim($_POST['address']);
     
-    if (!empty($name)) {
-        $stmt = $conn->prepare("INSERT INTO vendors (name, contact_info, address) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $contact_info, $address);
+    // Validate phone number (10 digits, starts with 0)
+    if (!preg_match('/^0\d{9}$/', $phone_number)) {
+        $message = "Phone number must be 10 digits and start with 0.";
+        $message_type = "warning";
+    } else if (!empty($name)) {
+        $stmt = $conn->prepare("INSERT INTO vendors (name, phone_number, email, address) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $name, $phone_number, $email, $address);
         
         if ($stmt->execute()) {
             $vendor_id = $conn->insert_id;
-            $message = "Vendor added successfully!";
+            $message = "Vendor added successfully! Vendor ID: " . $vendor_id;
             $message_type = "success";
             
             // Log the insert to audit trail
             $new_vendor_data = [
                 'name' => $name,
-                'contact_info' => $contact_info,
+                'phone_number' => $phone_number,
+                'email' => $email,
                 'address' => $address
             ];
             log_insert('vendors', $vendor_id, $new_vendor_data);
             
             // Clear form values
-            $name = $contact_info = $address = '';
+            $name = $phone_number = $email = $address = '';
         } else {
             $message = "Error: " . $stmt->error;
             $message_type = "danger";
@@ -55,8 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     
     <div class="mb-3">
-        <label for="contact_info" class="form-label">Contact Information</label>
-        <textarea class="form-control" id="contact_info" name="contact_info" rows="3"><?php echo isset($contact_info) ? htmlspecialchars($contact_info) : ''; ?></textarea>
+        <label for="phone_number" class="form-label">Phone Number *</label>
+        <input type="tel" class="form-control" id="phone_number" name="phone_number" value="<?php echo isset($phone_number) ? htmlspecialchars($phone_number) : ''; ?>" placeholder="e.g., 0771234567" required>
+        <div class="form-text">Phone number must be 10 digits and start with 0</div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>" placeholder="e.g., vendor@example.com">
     </div>
     
     <div class="mb-3">

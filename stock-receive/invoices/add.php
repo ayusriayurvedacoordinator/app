@@ -23,15 +23,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $submitted_is_foc = $_POST['is_foc'] ?? [];
     $submitted_category_ids = $_POST['category_id'] ?? [];
 
-    // Validate required fields
-    if ($vendor_id && $invoice_date && $received_date && $total_amount) {
+    // Calculate total amount from items instead of form submission
+    $calculated_total = 0;
+    foreach ($submitted_amounts as $amount) {
+        $calculated_total += floatval($amount);
+    }
+    $total_amount = $calculated_total;
+
+    // Validate date formats
+    $date_pattern = '/^\d{4}-\d{2}-\d{2}$/';
+    if (!preg_match($date_pattern, $invoice_date) || !preg_match($date_pattern, $received_date)) {
+        $message = "Invalid date format. Please use YYYY-MM-DD format.";
+        $message_type = "danger";
+    } else if ($vendor_id && $invoice_date && $received_date && $total_amount >= 0) {
         $stmt = $conn->prepare("INSERT INTO invoices (vendor_id, invoice_number, invoice_date, total_amount, discount, received_date, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isddsss", $vendor_id, $invoice_number, $invoice_date, $total_amount, $discount, $received_date, $notes);
+        $stmt->bind_param("issddss", $vendor_id, $invoice_number, $invoice_date, $total_amount, $discount, $received_date, $notes);
         
         if ($stmt->execute()) {
             $invoice_id = $conn->insert_id;
-            $message = "Invoice added successfully! Invoice ID: " . $invoice_id;
-            $message_type = "success";
             
             // Log the insert to audit trail
             $new_invoice_data = [
@@ -45,7 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ];
             log_insert('invoices', $invoice_id, $new_invoice_data);
             
-            // Process invoice items
+            // Process invoice items with validation
+            $has_errors = false;
+            $error_messages = [];
+
             for ($i = 0; $i < count($submitted_product_names); $i++) {
                 $product_name = trim($submitted_product_names[$i]);
                 if (!empty($product_name)) {
@@ -54,30 +66,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $amount = $submitted_amounts[$i] ?? 0;
                     $is_foc = isset($submitted_is_foc[$i]) ? 1 : 0;
                     $category_id = $submitted_category_ids[$i] ?? null;
-                    
+
+                    // Validate quantity
+                    if ($quantity <= 0) {
+                        $has_errors = true;
+                        $error_messages[] = "Quantity for '$product_name' must be greater than 0.";
+                        continue;
+                    }
+
                     $item_stmt = $conn->prepare("INSERT INTO invoice_items (invoice_id, product_name, quantity, rate, amount, is_free_of_charge, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                    $item_stmt->bind_param("isiddddi", $invoice_id, $product_name, $quantity, $rate, $amount, $is_foc, $category_id);
-                    $item_stmt->execute();
-                    
-                    // Log the item insert to audit trail
-                    $new_item_data = [
-                        'invoice_id' => $invoice_id,
-                        'product_name' => $product_name,
-                        'quantity' => $quantity,
-                        'rate' => $rate,
-                        'amount' => $amount,
-                        'is_free_of_charge' => $is_foc,
-                        'category_id' => $category_id
-                    ];
-                    log_insert('invoice_items', $conn->insert_id, $new_item_data);
-                    
+                    $item_stmt->bind_param("isiddii", $invoice_id, $product_name, $quantity, $rate, $amount, $is_foc, $category_id);
+
+                    if (!$item_stmt->execute()) {
+                        $has_errors = true;
+                        $error_messages[] = "Error adding item '$product_name': " . $item_stmt->error;
+                    } else {
+                        // Log the item insert to audit trail
+                        $new_item_data = [
+                            'invoice_id' => $invoice_id,
+                            'product_name' => $product_name,
+                            'quantity' => $quantity,
+                            'rate' => $rate,
+                            'amount' => $amount,
+                            'is_free_of_charge' => $is_foc,
+                            'category_id' => $category_id
+                        ];
+                        log_insert('invoice_items', $conn->insert_id, $new_item_data);
+                    }
+
                     $item_stmt->close();
                 }
             }
-            
-            // Redirect to the newly created invoice view page
-            header("Location: view.php?id=" . $invoice_id);
-            exit();
+
+            if (!$has_errors) {
+                $message = "Invoice added successfully! Invoice ID: " . $invoice_id;
+                $message_type = "success";
+                
+                // Clear form values after successful submission
+                $vendor_id = 0;
+                $invoice_number = '';
+                $invoice_date = $received_date = date('Y-m-d');
+                $total_amount = $discount = 0;
+                $notes = '';
+                $submitted_product_names = [''];
+                $submitted_quantities = [''];
+                $submitted_rates = [''];
+                $submitted_amounts = [''];
+                $submitted_is_foc = [0];
+                $submitted_category_ids = [0];
+            } else {
+                $message = implode('<br>', $error_messages);
+                $message_type = "danger";
+            }
         } else {
             $message = "Error: " . $stmt->error;
             $message_type = "danger";
@@ -96,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $total_amount = $_POST['total_amount'] ?? 0;
     $discount = $_POST['discount'] ?? 0;
     $notes = trim($_POST['notes'] ?? '');
-    
+
     // Get the submitted items
     $submitted_product_names = $_POST['product_name'] ?? [];
     $submitted_quantities = $_POST['quantity'] ?? [];
@@ -158,8 +198,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <div class="col-md-6">
             <div class="mb-3">
-                <label for="total_amount" class="form-label">Total Amount ($) *</label>
-                <input type="number" step="0.01" class="form-control" id="total_amount" name="total_amount" value="<?php echo $total_amount; ?>" required>
+                <label for="total_amount" class="form-label">Calculated Total Amount ($)</label>
+                <input type="number" step="0.01" class="form-control" id="total_amount" name="total_amount" value="<?php echo $total_amount; ?>" readonly>
             </div>
             
             <div class="mb-3">
@@ -186,6 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rate = $submitted_rates[$i] ?? '';
             $amount = $submitted_amounts[$i] ?? '';
             $is_foc = $submitted_is_foc[$i] ?? 0;
+            $category_id = $submitted_category_ids[$i] ?? 0;
         ?>
         <div class="item-row row mb-2">
             <div class="col-md-3">
@@ -285,19 +326,13 @@ document.addEventListener('DOMContentLoaded', function() {
         row.querySelector('.remove-item').addEventListener('click', removeItem);
     });
     
-    // Add event listener to discount field to recalculate total
-    const discountField = document.getElementById('discount');
-    if (discountField) {
-        discountField.addEventListener('input', recalculateTotal);
-    }
-    
     function calculateAmount(e) {
         const row = e.target.closest('.item-row');
         const qty = parseFloat(row.querySelector('.quantity').value) || 0;
         const rate = parseFloat(row.querySelector('.rate').value) || 0;
         const amountField = row.querySelector('.amount');
         const isFoc = row.querySelector('.is-foc').checked;
-        
+
         if (isFoc) {
             amountField.value = 0;
         } else {
@@ -313,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const qty = parseFloat(row.querySelector('.quantity').value) || 0;
         const rate = parseFloat(row.querySelector('.rate').value) || 0;
         const amountField = row.querySelector('.amount');
-        
+
         if (e.target.checked) {
             amountField.value = 0;
         } else {
@@ -328,13 +363,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const row = e.target.closest('.item-row');
         if (document.querySelectorAll('.item-row').length > 1) {
             row.remove();
-            // Recalculate total amount
             recalculateTotal();
         } else {
             alert('At least one item is required.');
         }
     }
     
+    // Recalculate total amount based on all items
     function recalculateTotal() {
         let subtotal = 0;
         document.querySelectorAll('.item-row').forEach(function(row) {
@@ -351,6 +386,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (totalField) {
             totalField.value = finalTotal.toFixed(2);
         }
+    }
+    
+    // Add event listener to discount field to recalculate total
+    const discountField = document.getElementById('discount');
+    if (discountField) {
+        discountField.addEventListener('input', recalculateTotal);
     }
     
     // Initialize total calculation on page load

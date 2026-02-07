@@ -44,7 +44,8 @@ if(isset($_GET['delete'])) {
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Contact Info</th>
+            <th>Phone Number</th>
+            <th>Email</th>
             <th>Address</th>
             <th>Created At</th>
             <th>Actions</th>
@@ -59,7 +60,8 @@ if(isset($_GET['delete'])) {
                 echo "<tr>";
                 echo "<td>".$row['id']."</td>";
                 echo "<td>".$row['name']."</td>";
-                echo "<td>".$row['contact_info']."</td>";
+                echo "<td>".$row['phone_number']."</td>";
+                echo "<td>".$row['email']."</td>";
                 echo "<td>".$row['address']."</td>";
                 echo "<td>".date('M j, Y', strtotime($row['created_at']))."</td>";
                 echo "<td>
@@ -69,7 +71,7 @@ if(isset($_GET['delete'])) {
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='6' class='text-center'>No vendors found</td></tr>";
+            echo "<tr><td colspan='7' class='text-center'>No vendors found</td></tr>";
         }
         ?>
     </tbody>

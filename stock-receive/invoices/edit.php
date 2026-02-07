@@ -55,11 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $submitted_amounts = $_POST['amount'] ?? [];
     $submitted_is_foc = $_POST['is_foc'] ?? [];
     $submitted_category_ids = $_POST['category_id'] ?? [];
-    
+
+    // Calculate total amount from items instead of form submission
+    $calculated_total = 0;
+    foreach ($submitted_amounts as $amount) {
+        $calculated_total += floatval($amount);
+    }
+    $total_amount = $calculated_total;
+
     // Validate required fields
-    if ($vendor_id && $invoice_date && $received_date && $total_amount) {
+    if ($vendor_id && $invoice_date && $received_date && $total_amount >= 0) {
         $stmt = $conn->prepare("UPDATE invoices SET vendor_id=?, invoice_number=?, invoice_date=?, total_amount=?, discount=?, received_date=?, notes=? WHERE id=?");
-        $stmt->bind_param("isddddsi", $vendor_id, $invoice_number, $invoice_date, $total_amount, $discount, $received_date, $notes, $id);
+        $stmt->bind_param("isddsssi", $vendor_id, $invoice_number, $invoice_date, $total_amount, $discount, $received_date, $notes, $id);
         
         if ($stmt->execute()) {
             // Log the update to audit trail
@@ -214,8 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         <div class="col-md-6">
             <div class="mb-3">
-                <label for="total_amount" class="form-label">Total Amount ($) *</label>
-                <input type="number" step="0.01" class="form-control" id="total_amount" name="total_amount" value="<?php echo $total_amount; ?>" required>
+                <label for="total_amount" class="form-label">Calculated Total Amount ($)</label>
+                <input type="number" step="0.01" class="form-control" id="total_amount" name="total_amount" value="<?php echo $total_amount; ?>" readonly>
             </div>
             
             <div class="mb-3">
@@ -353,13 +360,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const rate = parseFloat(row.querySelector('.rate').value) || 0;
         const amountField = row.querySelector('.amount');
         const isFoc = row.querySelector('.is-foc').checked;
-        
+
         if (isFoc) {
             amountField.value = 0;
         } else {
             amountField.value = (qty * rate).toFixed(2);
         }
-        
+
         // Recalculate total amount
         recalculateTotal();
     }
@@ -369,13 +376,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const qty = parseFloat(row.querySelector('.quantity').value) || 0;
         const rate = parseFloat(row.querySelector('.rate').value) || 0;
         const amountField = row.querySelector('.amount');
-        
+
         if (e.target.checked) {
             amountField.value = 0;
         } else {
             amountField.value = (qty * rate).toFixed(2);
         }
-        
+
         // Recalculate total amount
         recalculateTotal();
     }

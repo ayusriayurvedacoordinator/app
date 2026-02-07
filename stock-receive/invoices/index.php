@@ -57,15 +57,13 @@ if(isset($_GET['delete'])) {
             <th>Total Amount</th>
             <th>Discount</th>
             <th>Net Amount</th>
-            <th>Category</th>
 <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         <?php
         $result = $conn->query("
-            SELECT i.*, v.name as vendor_name, (i.total_amount - i.discount) as net_amount,
-                   (SELECT c.name FROM invoice_items ii LEFT JOIN categories c ON ii.category_id = c.id WHERE ii.invoice_id = i.id LIMIT 1) as category_name
+            SELECT i.*, v.name as vendor_name, (i.total_amount - i.discount) as net_amount
             FROM invoices i
             JOIN vendors v ON i.vendor_id = v.id
             ORDER BY i.invoice_date DESC
@@ -82,7 +80,6 @@ if(isset($_GET['delete'])) {
                 echo "<td>$".$row['total_amount']."</td>";
                 echo "<td>$".$row['discount']."</td>";
                 echo "<td>$".$row['net_amount']."</td>";
-                echo "<td>".($row['category_name'] ?: 'N/A')."</td>";
                 echo "<td>
                         <a href='view.php?id=".$row['id']."' class='btn btn-sm btn-outline-info'>View</a>
                         <a href='edit.php?id=".$row['id']."' class='btn btn-sm btn-outline-primary'>Edit</a>
@@ -92,7 +89,7 @@ if(isset($_GET['delete'])) {
                 echo "</tr>";
             }
         } else {
-            echo "<tr><td colspan='9' class='text-center'>No invoices found</td></tr>";
+            echo "<tr><td colspan='8' class='text-center'>No invoices found</td></tr>";
         }
         ?>
     </tbody>

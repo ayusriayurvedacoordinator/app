@@ -22,19 +22,25 @@ $message_type = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name']);
-    $contact_info = trim($_POST['contact_info']);
+    $phone_number = trim($_POST['phone_number']);
+    $email = trim($_POST['email']);
     $address = trim($_POST['address']);
     
-    // Get old values for audit trail
-    $old_vendor_data = [
-        'name' => $vendor['name'],
-        'contact_info' => $vendor['contact_info'],
-        'address' => $vendor['address']
-    ];
-    
-    if (!empty($name)) {
-        $stmt = $conn->prepare("UPDATE vendors SET name=?, contact_info=?, address=? WHERE id=?");
-        $stmt->bind_param("sssi", $name, $contact_info, $address, $id);
+    // Validate phone number (10 digits, starts with 0)
+    if (!preg_match('/^0\d{9}$/', $phone_number)) {
+        $message = "Phone number must be 10 digits and start with 0.";
+        $message_type = "warning";
+    } else if (!empty($name)) {
+        // Get old values for audit trail
+        $old_vendor_data = [
+            'name' => $vendor['name'],
+            'phone_number' => $vendor['phone_number'],
+            'email' => $vendor['email'],
+            'address' => $vendor['address']
+        ];
+        
+        $stmt = $conn->prepare("UPDATE vendors SET name=?, phone_number=?, email=?, address=? WHERE id=?");
+        $stmt->bind_param("ssssi", $name, $phone_number, $email, $address, $id);
         
         if ($stmt->execute()) {
             $message = "Vendor updated successfully!";
@@ -43,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Log the update to audit trail
             $new_vendor_data = [
                 'name' => $name,
-                'contact_info' => $contact_info,
+                'phone_number' => $phone_number,
+                'email' => $email,
                 'address' => $address
             ];
             log_update('vendors', $id, $old_vendor_data, $new_vendor_data);
@@ -79,8 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     
     <div class="mb-3">
-        <label for="contact_info" class="form-label">Contact Information</label>
-        <textarea class="form-control" id="contact_info" name="contact_info" rows="3"><?php echo htmlspecialchars($vendor['contact_info']); ?></textarea>
+        <label for="phone_number" class="form-label">Phone Number *</label>
+        <input type="tel" class="form-control" id="phone_number" name="phone_number" value="<?php echo htmlspecialchars($vendor['phone_number']); ?>" placeholder="e.g., 0771234567" required>
+        <div class="form-text">Phone number must be 10 digits and start with 0</div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($vendor['email']); ?>" placeholder="e.g., vendor@example.com">
     </div>
     
     <div class="mb-3">

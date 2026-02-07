@@ -17,7 +17,6 @@ $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recount
             <select name="recount_date" id="recount_date" class="form-select" onchange="this.form.submit()">
                 <option value="">-- All Dates --</option>
                 <?php
-                $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recounts ORDER BY recount_date DESC");
                 while($recount = $recounts_result->fetch_assoc()) {
                     $selected = (isset($_GET['recount_date']) && $_GET['recount_date'] == $recount['recount_date']) ? 'selected' : '';
                     echo "<option value='".$recount['recount_date']."' $selected>".date('M j, Y', strtotime($recount['recount_date']))."</option>";
@@ -95,14 +94,7 @@ $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recount
                             echo "<td>".($row['previous_quantity'] ?? 'N/A')."</td>";
                             echo "<td>".$row['counted_quantity']."</td>";
                             echo "<td class='$variance_class'>".$variance."</td>";
-                            echo "<td>";
-                            if($row['category_name']) {
-                                $category_slug = strtolower(str_replace(' ', '-', $row['category_name']));
-                                echo "<span class='category-label $category_slug'>".$row['category_name']."</span>";
-                            } else {
-                                echo 'N/A';
-                            }
-                            echo "</td>";
+                            echo "<td>".($row['category_name'] ?: 'N/A')."</td>";
                             echo "<td>".date('M j, Y', strtotime($recount_date))."</td>";
                             echo "<td>".$counted_by."</td>";
                             echo "</tr>";
@@ -140,7 +132,7 @@ $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recount
                         sr.recount_date,
                         sr.counted_by,
                         (SELECT COUNT(*) FROM stock_recount_items sri WHERE sri.recount_id = sr.id) AS items_counted,
-                        (SELECT SUM(sri.counted_quantity - (SELECT COALESCE(SUM(ii.quantity), 0) FROM invoice_items ii WHERE ii.product_name = sri.product_name)) FROM stock_recount_items sri WHERE sri.recount_id = sr.id) AS total_variance
+                        (SELECT SUM(sri.counted_quantity - (SELECT COALESCE(SUM(ii.quantity), 0) FROM invoice_items ii WHERE ii.product_name = sri.product_name ORDER BY ii.created_at DESC LIMIT 1)) FROM stock_recount_items sri WHERE sri.recount_id = sr.id) AS total_variance
                     FROM stock_recounts sr
                     ORDER BY sr.recount_date DESC
                 ";
@@ -154,7 +146,7 @@ $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recount
                             SELECT 
                                 sri.product_name,
                                 sri.counted_quantity,
-                                (SELECT COALESCE(SUM(ii.quantity), 0) FROM invoice_items ii WHERE ii.product_name = sri.product_name) AS previous_quantity
+                                (SELECT COALESCE(SUM(ii.quantity), 0) FROM invoice_items ii WHERE ii.product_name = sri.product_name ORDER BY ii.created_at DESC LIMIT 1) AS previous_quantity
                             FROM stock_recount_items sri
                             WHERE sri.recount_id = (SELECT id FROM stock_recounts WHERE recount_date = ?)
                         ";
@@ -168,7 +160,7 @@ $recounts_result = $conn->query("SELECT DISTINCT recount_date FROM stock_recount
                         $negative_variance_count = 0;
                         
                         while($detail = $variance_details_result->fetch_assoc()) {
-                            $variance = $detail['counted_quantity'] - $detail['previous_quantity'];
+                            $variance = $detail['counted_quantity'] - ($detail['previous_quantity'] ?? 0);
                             if($variance > 0) {
                                 $positive_variance_count++;
                             } else if($variance < 0) {

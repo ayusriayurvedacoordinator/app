@@ -12,58 +12,58 @@ include 'includes/header.php';
 
 <div class="row">
     <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Vendors</div>
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">Vendors</div>
             <div class="card-body">
                 <?php
                 include 'config/database.php';
                 $result = $conn->query("SELECT COUNT(*) as count FROM vendors");
                 $count = $result->fetch_assoc()['count'];
                 ?>
-                <h4 class="card-title"><?php echo $count; ?></h4>
-                <a href="vendors/index.php" class="btn btn-light btn-sm">Manage</a>
+                <h4 class="card-title text-primary"><?php echo $count; ?></h4>
+                <a href="vendors/index.php" class="btn btn-outline-primary btn-sm">Manage</a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-header">Invoices</div>
+        <div class="card mb-3">
+            <div class="card-header bg-success text-white">Invoices</div>
             <div class="card-body">
                 <?php
                 $result = $conn->query("SELECT COUNT(*) as count FROM invoices");
                 $count = $result->fetch_assoc()['count'];
                 ?>
-                <h4 class="card-title"><?php echo $count; ?></h4>
-                <a href="invoices/index.php" class="btn btn-light btn-sm">Manage</a>
+                <h4 class="card-title text-success"><?php echo $count; ?></h4>
+                <a href="invoices/index.php" class="btn btn-outline-success btn-sm">Manage</a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-header">Invoice Items</div>
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">Invoice Items</div>
             <div class="card-body">
                 <?php
                 $result = $conn->query("SELECT COUNT(*) as count FROM invoice_items");
                 $count = $result->fetch_assoc()['count'];
                 ?>
-                <h4 class="card-title"><?php echo $count; ?></h4>
-                <a href="invoices/index.php" class="btn btn-light btn-sm">View</a>
+                <h4 class="card-title text-info"><?php echo $count; ?></h4>
+                <a href="invoices/index.php" class="btn btn-outline-info btn-sm">View</a>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-3">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-header">Stock Recounts</div>
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-dark">Stock Recounts</div>
             <div class="card-body">
                 <?php
                 $result = $conn->query("SELECT COUNT(*) as count FROM stock_recounts");
                 $count = $result->fetch_assoc()['count'];
                 ?>
-                <h4 class="card-title"><?php echo $count; ?></h4>
-                <a href="stock_recounts/index.php" class="btn btn-light btn-sm">Manage</a>
+                <h4 class="card-title text-warning"><?php echo $count; ?></h4>
+                <a href="stock_recounts/index.php" class="btn btn-outline-warning btn-sm">Manage</a>
             </div>
         </div>
     </div>

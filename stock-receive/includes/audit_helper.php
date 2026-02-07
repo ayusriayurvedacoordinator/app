@@ -13,7 +13,7 @@ function log_insert($table_name, $record_id, $new_values, $changed_by = null) {
     $stmt = $conn->prepare("INSERT INTO audit_trail (table_name, record_id, action, new_values, changed_by) VALUES (?, ?, 'INSERT', ?, ?)");
     $new_values_json = json_encode($new_values);
     $changed_by = $changed_by ?: $_SESSION['username'] ?? 'system';
-    $stmt->bind_param("sis", $table_name, $record_id, $new_values_json, $changed_by);
+    $stmt->bind_param("siss", $table_name, $record_id, $new_values_json, $changed_by);
     $stmt->execute();
     $stmt->close();
 }
