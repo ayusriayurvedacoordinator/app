@@ -38,11 +38,11 @@ function log_update($table_name, $record_id, $old_values, $new_values, $changed_
  */
 function log_delete($table_name, $record_id, $old_values, $changed_by = null) {
     global $conn;
-    
+
     $stmt = $conn->prepare("INSERT INTO audit_trail (table_name, record_id, action, old_values, changed_by) VALUES (?, ?, 'DELETE', ?, ?)");
     $old_values_json = json_encode($old_values);
     $changed_by = $changed_by ?: $_SESSION['username'] ?? 'system';
-    $stmt->bind_param("sis", $table_name, $record_id, $old_values_json, $changed_by);
+    $stmt->bind_param("siss", $table_name, $record_id, $old_values_json, $changed_by);
     $stmt->execute();
     $stmt->close();
 }

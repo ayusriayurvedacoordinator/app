@@ -1,0 +1,58 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: '@yu5r14yurv3da@'
+          MYSQL_DATABASE: stock_receive
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mysqli, pdo_mysql
+        ini-values: post_max_size=256M, upload_max_filesize=256M
+        coverage: xdebug
+
+    - name: Copy environment file
+      run: |
+        cp .env.example .env || echo "DB_HOST=localhost\nDB_USER=root\nDB_PASS=@yu5r14yurv3da@\nDB_NAME=stock_receive\nDB_PORT=3306" > .env
+
+    - name: Create test database
+      run: |
+        mysql -h 127.0.0.1 -u root -p@yu5r14yurv3da@ -e "CREATE DATABASE IF NOT EXISTS stock_receive_test;"
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run database migrations
+      run: |
+        mysql -h 127.0.0.1 -u root -p@yu5r14yurv3da@ stock_receive < sql/migrations/001_initial_schema.sql
+
+    - name: Run tests
+      run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
