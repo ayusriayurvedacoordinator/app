@@ -5,7 +5,7 @@
  */
 
 class Logger {
-    private static $logFile = '../logs/app.log';
+    private static $logFile = __DIR__ . '/../logs/app.log';
     
     /**
      * Initialize the logger
