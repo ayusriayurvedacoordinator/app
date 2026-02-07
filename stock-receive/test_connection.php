@@ -4,7 +4,7 @@ require_once 'config/database.php';
 
 if ($conn) {
     echo "Database connection successful!<br>";
-    
+
     // Test query to verify tables exist
     $result = $conn->query("SELECT COUNT(*) as count FROM vendors");
     if ($result) {
@@ -13,23 +13,23 @@ if ($conn) {
     } else {
         echo "Error querying vendors table: " . $conn->error . "<br>";
     }
-    
-    $result = $conn->query("SELECT COUNT(*) as count FROM items");
+
+    $result = $conn->query("SELECT COUNT(*) as count FROM categories");
     if ($result) {
         $row = $result->fetch_assoc();
-        echo "Items table exists and has " . $row['count'] . " records.<br>";
+        echo "Categories table exists and has " . $row['count'] . " records.<br>";
     } else {
-        echo "Error querying items table: " . $conn->error . "<br>";
+        echo "Error querying categories table: " . $conn->error . "<br>";
     }
-    
-    $result = $conn->query("SELECT COUNT(*) as count FROM inventory_records");
+
+    $result = $conn->query("SELECT COUNT(*) as count FROM invoices");
     if ($result) {
         $row = $result->fetch_assoc();
-        echo "Inventory records table exists and has " . $row['count'] . " records.<br>";
+        echo "Invoices table exists and has " . $row['count'] . " records.<br>";
     } else {
-        echo "Error querying inventory records table: " . $conn->error . "<br>";
+        echo "Error querying invoices table: " . $conn->error . "<br>";
     }
-    
+
     $conn->close();
 } else {
     echo "Database connection failed!<br>";
