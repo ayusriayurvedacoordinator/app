@@ -103,12 +103,12 @@ The Stock Receive System is a PHP-based inventory management application focused
 
 ### Priority 3 (Architecture)
 1. [x] Separate business logic from presentation layer (already done)
-2. [ ] Enhance MVC pattern with proper controllers, routing, and separation of concerns
+2. [x] Enhance MVC pattern with proper controllers, routing, and separation of concerns
 3. [x] Add proper configuration management (already done)
 4. Create reusable utility functions
 5. [ ] Implement dependency injection to reduce global variable usage
-6. [ ] Implement centralized routing system
-7. [ ] Create dedicated controller classes
+6. [x] Implement centralized routing system
+7. [x] Create dedicated controller classes
 8. [ ] Implement repository pattern for data access
 9. [ ] Add request validation objects
 
