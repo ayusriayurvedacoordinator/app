@@ -1,6 +1,16 @@
 <?php
+/**
+ * Dashboard Page
+ * Main dashboard showing key metrics and recent activity
+ */
+
 $page_title = "Dashboard - Stock Receive System";
+include 'config/database.php';
+require_once 'services/StatsService.php';
 include 'includes/header.php';
+
+$statsService = new StatsService();
+$dashboardStats = $statsService->getDashboardStats();
 ?>
 
 <div class="row">
@@ -15,12 +25,7 @@ include 'includes/header.php';
         <div class="card mb-3">
             <div class="card-header bg-primary text-white">Vendors</div>
             <div class="card-body">
-                <?php
-                include 'config/database.php';
-                $result = $conn->query("SELECT COUNT(*) as count FROM vendors");
-                $count = $result->fetch_assoc()['count'];
-                ?>
-                <h4 class="card-title text-primary"><?php echo $count; ?></h4>
+                <h4 class="card-title text-primary"><?php echo $dashboardStats['vendors_count']; ?></h4>
                 <a href="vendors/index.php" class="btn btn-outline-primary btn-sm">Manage</a>
             </div>
         </div>
@@ -30,11 +35,7 @@ include 'includes/header.php';
         <div class="card mb-3">
             <div class="card-header bg-success text-white">Invoices</div>
             <div class="card-body">
-                <?php
-                $result = $conn->query("SELECT COUNT(*) as count FROM invoices");
-                $count = $result->fetch_assoc()['count'];
-                ?>
-                <h4 class="card-title text-success"><?php echo $count; ?></h4>
+                <h4 class="card-title text-success"><?php echo $dashboardStats['invoices_count']; ?></h4>
                 <a href="invoices/index.php" class="btn btn-outline-success btn-sm">Manage</a>
             </div>
         </div>
@@ -44,11 +45,7 @@ include 'includes/header.php';
         <div class="card mb-3">
             <div class="card-header bg-info text-white">Invoice Items</div>
             <div class="card-body">
-                <?php
-                $result = $conn->query("SELECT COUNT(*) as count FROM invoice_items");
-                $count = $result->fetch_assoc()['count'];
-                ?>
-                <h4 class="card-title text-info"><?php echo $count; ?></h4>
+                <h4 class="card-title text-info"><?php echo $dashboardStats['invoice_items_count']; ?></h4>
                 <a href="invoices/index.php" class="btn btn-outline-info btn-sm">View</a>
             </div>
         </div>
@@ -58,11 +55,7 @@ include 'includes/header.php';
         <div class="card mb-3">
             <div class="card-header bg-warning text-dark">Stock Recounts</div>
             <div class="card-body">
-                <?php
-                $result = $conn->query("SELECT COUNT(*) as count FROM stock_recounts");
-                $count = $result->fetch_assoc()['count'];
-                ?>
-                <h4 class="card-title text-warning"><?php echo $count; ?></h4>
+                <h4 class="card-title text-warning"><?php echo $dashboardStats['stock_recounts_count']; ?></h4>
                 <a href="stock_recounts/index.php" class="btn btn-outline-warning btn-sm">Manage</a>
             </div>
         </div>
@@ -77,12 +70,8 @@ include 'includes/header.php';
             </div>
             <div class="card-body">
                 <?php
-                $result = $conn->query("SELECT i.invoice_date, i.invoice_number, v.name as vendor_name, i.total_amount
-                                        FROM invoices i 
-                                        JOIN vendors v ON i.vendor_id = v.id 
-                                        ORDER BY i.invoice_date DESC LIMIT 1");
-                $latest = $result->fetch_assoc();
-                
+                $latest = $dashboardStats['latest_invoice'];
+
                 if($latest) {
                     echo "<p class='card-text'>".date('M j, Y', strtotime($latest['invoice_date']))."</p>";
                     echo "<small>".$latest['vendor_name']." - Invoice: ".($latest['invoice_number'] ?: 'N/A')."</small>";
@@ -95,7 +84,7 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="card mb-3">
             <div class="card-header">
@@ -103,11 +92,8 @@ include 'includes/header.php';
             </div>
             <div class="card-body">
                 <?php
-                $result = $conn->query("SELECT recount_date, counted_by, notes
-                                        FROM stock_recounts 
-                                        ORDER BY recount_date DESC LIMIT 1");
-                $latest = $result->fetch_assoc();
-                
+                $latest = $dashboardStats['latest_stock_recount'];
+
                 if($latest) {
                     echo "<p class='card-text'>".date('M j, Y', strtotime($latest['recount_date']))."</p>";
                     echo "<small>Counted by: ".($latest['counted_by'] ?: 'N/A')."</small>";
@@ -138,16 +124,10 @@ include 'includes/header.php';
             </thead>
             <tbody>
                 <?php
-                $result = $conn->query("
-                    SELECT i.*, v.name as vendor_name, (i.total_amount - i.discount) as net_amount
-                    FROM invoices i
-                    JOIN vendors v ON i.vendor_id = v.id
-                    ORDER BY i.invoice_date DESC
-                    LIMIT 5
-                ");
-                
-                if($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
+                $recentInvoices = $dashboardStats['recent_invoices'];
+
+                if(!empty($recentInvoices)) {
+                    foreach($recentInvoices as $row) {
                         echo "<tr>";
                         echo "<td>".date('M j, Y', strtotime($row['invoice_date']))."</td>";
                         echo "<td>".$row['vendor_name']."</td>";

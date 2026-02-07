@@ -1,0 +1,116 @@
+-- Optimized database schema for stock receive application with audit trail
+
+-- Create the database
+CREATE DATABASE IF NOT EXISTS stock_receive;
+USE stock_receive;
+
+-- Create vendors table
+CREATE TABLE IF NOT EXISTS vendors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    contact_info TEXT,
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create categories table
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create invoices table
+CREATE TABLE IF NOT EXISTS invoices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    vendor_id INT NOT NULL,
+    invoice_number VARCHAR(100),
+    invoice_date DATE NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    discount DECIMAL(10,2) DEFAULT 0,
+    received_date DATE NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE
+);
+
+-- Create invoice_items table
+CREATE TABLE IF NOT EXISTS invoice_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    rate DECIMAL(10,2) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    is_free_of_charge BOOLEAN DEFAULT FALSE,
+    category_id INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+-- Create stock_recounts table to track physical stock counts
+CREATE TABLE IF NOT EXISTS stock_recounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recount_date DATE NOT NULL,
+    counted_by VARCHAR(100),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create stock_recount_items table to track individual item counts
+CREATE TABLE IF NOT EXISTS stock_recount_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recount_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    counted_quantity INT NOT NULL,
+    previous_quantity INT NOT NULL,
+    variance INT NOT NULL, -- difference between counted and previous
+    variance_reason TEXT, -- reason for the difference
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (recount_id) REFERENCES stock_recounts(id) ON DELETE CASCADE
+);
+
+-- Create audit_trail table to track all changes
+CREATE TABLE IF NOT EXISTS audit_trail (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    table_name VARCHAR(50) NOT NULL,
+    record_id INT NOT NULL,
+    action ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    old_values JSON,
+    new_values JSON,
+    changed_by VARCHAR(100), -- Could store user info if implemented
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_invoice_vendor ON invoices(vendor_id);
+CREATE INDEX IF NOT EXISTS idx_invoice_date ON invoices(invoice_date);
+CREATE INDEX IF NOT EXISTS idx_invoice_received_date ON invoices(received_date);
+CREATE INDEX IF NOT EXISTS idx_invoice_number ON invoices(invoice_number);
+CREATE INDEX IF NOT EXISTS idx_invoice_items_invoice ON invoice_items(invoice_id);
+CREATE INDEX IF NOT EXISTS idx_invoice_items_category ON invoice_items(category_id);
+CREATE INDEX IF NOT EXISTS idx_invoice_items_product_name ON invoice_items(product_name);
+CREATE INDEX IF NOT EXISTS idx_stock_recount_date ON stock_recounts(recount_date);
+CREATE INDEX IF NOT EXISTS idx_stock_recount_items_recount ON stock_recount_items(recount_id);
+CREATE INDEX IF NOT EXISTS idx_audit_table_record ON audit_trail(table_name, record_id);
+CREATE INDEX IF NOT EXISTS idx_audit_changed_at ON audit_trail(changed_at);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_trail(action);
+
+-- Insert default categories
+INSERT IGNORE INTO categories (name, description) VALUES
+('Balm', 'Topical medicinal preparations'),
+('Oil', 'Medicinal oils'),
+('Kwatha', 'Decoctions or herbal teas'),
+('Paanta', 'Medicinal decoctions'),
+('Churna', 'Medicinal powders'),
+('Tablet', 'Tablets and capsules'),
+('Syrup', 'Liquid medicines'),
+('Cream', 'Topical creams and ointments');

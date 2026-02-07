@@ -1,24 +1,66 @@
 <?php
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root'); // Change this to your MySQL username
-define('DB_PASS', '@yu5r14yurv3da@');     // Change this to your MySQL password
-define('DB_NAME', 'stock_receive');
+/**
+ * Database Class
+ * Handles database connections and operations
+ */
 
-// Set timezone to Asia/Colombo
-date_default_timezone_set('Asia/Colombo');
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../includes/logger.php';
 
-// Create connection
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+class Database {
+    private $connection;
+    private $host;
+    private $username;
+    private $password;
+    private $dbname;
+    
+    public function __construct() {
+        $this->host = DB_HOST;
+        $this->username = DB_USER;
+        $this->password = DB_PASS;
+        $this->dbname = DB_NAME;
+        
+        $this->connect();
+    }
+    
+    /**
+     * Create database connection
+     */
+    private function connect() {
+        $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbname);
+        
+        if ($this->connection->connect_error) {
+            Logger::error("Database connection failed: " . $this->connection->connect_error);
+            throw new Exception("Connection failed: " . $this->connection->connect_error);
+        }
+        
+        // Set session timezone to match application timezone
+        $this->connection->query("SET time_zone = '+05:30'"); // Sri Lanka Standard Time
+    }
+    
+    /**
+     * Get database connection
+     */
+    public function getConnection() {
+        return $this->connection;
+    }
+    
+    /**
+     * Close database connection
+     */
+    public function close() {
+        if ($this->connection) {
+            $this->connection->close();
+        }
+    }
 }
 
-// Set session timezone to match application timezone
-$conn->query("SET time_zone = '+05:30'"); // Sri Lanka Standard Time
-
-// Include audit helper
-include_once dirname(__DIR__) . '/includes/audit_helper.php';
+// Create a global instance for backward compatibility
+try {
+    $database = new Database();
+    $conn = $database->getConnection();
+} catch (Exception $e) {
+    Logger::error("Database connection failed: " . $e->getMessage());
+    die("Database connection failed. Please contact administrator.");
+}
 ?>
