@@ -65,11 +65,34 @@ config/database.php
 database/seeds/
 database/migrations/
 
-# Ignore all .sql files except those in stock-receive directory (since you have SQL files there)
+# Ignore all .sql files except those in stock-receive directory and its subdirectories (since you have SQL files there)
 *.sql
-!stock-receive/*.sql
+!stock-receive/**/*.sql
 
 # Ignore debug/error output
 error_log
 core
 core.*
+
+# PHP-specific files
+*.pid
+*.out
+*.orig
+*.rej
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.xml
+
+# Laravel/Symfony specific (if applicable)
+bootstrap/cache/
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+storage/
+storage/*/
+!storage/.gitkeep
+
+# Ignore any backup files
+*~
+*#
+\#*\#
