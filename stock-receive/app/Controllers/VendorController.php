@@ -5,9 +5,9 @@
  */
 
 require_once __DIR__ . '/BaseController.php';
-require_once __DIR__ . '/../models/Vendor.php';
-require_once __DIR__ . '/../includes/sanitize.php';
-require_once __DIR__ . '/../includes/audit_helper.php';
+require_once __DIR__ . '/../Models/Vendor.php';
+require_once __DIR__ . '/../../../includes/sanitize.php';
+require_once __DIR__ . '/../../../includes/audit_helper.php';
 
 class VendorController extends BaseController
 {

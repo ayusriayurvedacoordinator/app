@@ -40,4 +40,4 @@ $page_title = $page_title ?? 'Add Vendor - Stock Receive System';
 $content = ob_get_clean();
 
 // Include the layout template
-include __DIR__ . '/layout.php';
+include __DIR__ . '/../layout.php';

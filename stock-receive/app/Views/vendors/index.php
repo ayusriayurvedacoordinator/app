@@ -60,4 +60,4 @@ function confirmDelete(event, url) {
 $content = ob_get_clean();
 
 // Include the layout template
-include __DIR__ . '/layout.php';
+include __DIR__ . '/../layout.php';

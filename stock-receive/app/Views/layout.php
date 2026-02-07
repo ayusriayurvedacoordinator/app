@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title ?? 'Stock Receive System'; ?></title>
     <!-- Local Bootstrap CSS -->
-    <link href="/stock-receive/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/stock-receive/css/style.css">
+    <link href="/stock-receive/public/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stock-receive/public/css/style.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Local Bootstrap JS -->
-    <script src="/stock-receive/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/stock-receive/js/script.js"></script>
+    <script src="/stock-receive/public/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/stock-receive/public/js/script.js"></script>
 </body>
 </html>

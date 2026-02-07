@@ -40,7 +40,7 @@ class AppDispatcher
     
     private function handleVendorRequest($id, $action)
     {
-        require_once __DIR__ . '/controllers/VendorController.php';
+        require_once __DIR__ . '/app/Controllers/VendorController.php';
         $controller = new VendorController();
         
         if ($id === 'create' && !$action) {
@@ -54,7 +54,7 @@ class AppDispatcher
         } elseif ($id) {
             // View specific vendor
             $vendor = $controller->vendorModel->getById((int)$id);
-            include __DIR__ . '/views/vendors/show.php';
+            include __DIR__ . '/app/Views/vendors/show.php';
         } else {
             $controller->index();
         }
@@ -84,6 +84,19 @@ class AppDispatcher
     {
         // Try to include the original file if it exists
         $originalFile = __DIR__ . '/' . $path . '.php';
+        
+        // Special handling for vendor routes to redirect to new MVC structure
+        if (strpos($path, 'vendors') === 0) {
+            // Extract vendor ID and action if present
+            $parts = explode('/', $path);
+            $id = isset($parts[1]) && is_numeric($parts[1]) ? $parts[1] : null;
+            $action = isset($parts[2]) ? $parts[2] : null;
+            
+            // Route to new controller
+            $this->handleVendorRequest($id, $action);
+            return;
+        }
+        
         if (file_exists($originalFile)) {
             include $originalFile;
         } else {

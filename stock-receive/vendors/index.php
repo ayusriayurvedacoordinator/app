@@ -2,7 +2,7 @@
 $page_title = "Vendors - Stock Receive System";
 require_once '../config/database.php'; // Include database connection first
 require_once '../includes/sanitize.php'; // Include sanitization utilities
-require_once '../models/Vendor.php'; // Include Vendor model
+require_once '../app/Models/Vendor.php'; // Include Vendor model from new location
 require_once '../includes/header.php'; // Include header from parent directory
 
 $vendorModel = new Vendor();

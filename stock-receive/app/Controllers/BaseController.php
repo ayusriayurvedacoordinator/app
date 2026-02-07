@@ -29,17 +29,17 @@ abstract class BaseController
     protected function render(string $view, array $data = []): void
     {
         $viewData = array_merge($this->viewData, $data);
-        
+
         // Extract variables to local scope for the view
         extract($viewData);
-        
+
         // Determine the view file path
-        $viewFile = __DIR__ . '/../views/' . $view . '.php';
-        
+        $viewFile = __DIR__ . '/../Views/' . $view . '.php';
+
         if (!file_exists($viewFile)) {
             throw new Exception("View file not found: {$viewFile}");
         }
-        
+
         include $viewFile;
     }
 
@@ -81,7 +81,7 @@ abstract class BaseController
      */
     protected function sanitizeInput($data)
     {
-        require_once __DIR__ . '/../includes/sanitize.php';
+        require_once __DIR__ . '/../../../includes/sanitize.php';
         return sanitize_input($data);
     }
 
@@ -90,7 +90,7 @@ abstract class BaseController
      */
     protected function sanitizeOutput($data)
     {
-        require_once __DIR__ . '/../includes/sanitize.php';
+        require_once __DIR__ . '/../../../includes/sanitize.php';
         return sanitize_output($data);
     }
 }
