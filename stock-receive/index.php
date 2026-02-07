@@ -21,7 +21,7 @@ if (!empty($path)) {
 
     $page_title = "Dashboard - Stock Receive System";
     include 'config/database.php';
-    require_once 'services/StatsService.php';
+    require_once 'app/Services/StatsService.php';
     include 'includes/header.php';
 
     $statsService = new StatsService();
@@ -41,7 +41,7 @@ if (!empty($path)) {
                 <div class="card-header bg-primary text-white">Vendors</div>
                 <div class="card-body">
                     <h4 class="card-title text-primary"><?php echo $dashboardStats['vendors_count']; ?></h4>
-                    <a href="vendors/index.php" class="btn btn-outline-primary btn-sm">Manage</a>
+                    <a href="legacy/vendors/index.php" class="btn btn-outline-primary btn-sm">Manage</a>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@ if (!empty($path)) {
                 <div class="card-header bg-success text-white">Invoices</div>
                 <div class="card-body">
                     <h4 class="card-title text-success"><?php echo $dashboardStats['invoices_count']; ?></h4>
-                    <a href="invoices/index.php" class="btn btn-outline-success btn-sm">Manage</a>
+                    <a href="legacy/invoices/index.php" class="btn btn-outline-success btn-sm">Manage</a>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@ if (!empty($path)) {
                 <div class="card-header bg-info text-white">Invoice Items</div>
                 <div class="card-body">
                     <h4 class="card-title text-info"><?php echo $dashboardStats['invoice_items_count']; ?></h4>
-                    <a href="invoices/index.php" class="btn btn-outline-info btn-sm">View</a>
+                    <a href="legacy/invoices/index.php" class="btn btn-outline-info btn-sm">View</a>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@ if (!empty($path)) {
                 <div class="card-header bg-warning text-dark">Stock Recounts</div>
                 <div class="card-body">
                     <h4 class="card-title text-warning"><?php echo $dashboardStats['stock_recounts_count']; ?></h4>
-                    <a href="stock_recounts/index.php" class="btn btn-outline-warning btn-sm">Manage</a>
+                    <a href="legacy/stock_recounts/index.php" class="btn btn-outline-warning btn-sm">Manage</a>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@ if (!empty($path)) {
                         echo "<small>No invoices yet</small>";
                     }
                     ?>
-                    <a href="invoices/add.php" class="btn btn-primary btn-sm mt-2">Add Invoice</a>
+                    <a href="legacy/invoices/add.php" class="btn btn-primary btn-sm mt-2">Add Invoice</a>
                 </div>
             </div>
         </div>
@@ -117,7 +117,7 @@ if (!empty($path)) {
                         echo "<small>No stock recounts yet</small>";
                     }
                     ?>
-                    <a href="stock_recounts/add.php" class="btn btn-warning btn-sm mt-2">Add Recount</a>
+                    <a href="legacy/stock_recounts/add.php" class="btn btn-warning btn-sm mt-2">Add Recount</a>
                 </div>
             </div>
         </div>
