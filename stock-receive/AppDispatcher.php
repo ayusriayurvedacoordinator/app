@@ -82,6 +82,9 @@ class AppDispatcher
     
     private function fallbackToOriginal($path)
     {
+        // Remove leading slash if present
+        $path = ltrim($path, '/');
+        
         // Try to include the original file if it exists
         $originalFile = __DIR__ . '/' . $path . '.php';
         
