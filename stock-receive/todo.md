@@ -111,7 +111,7 @@ The Stock Receive System is a PHP-based inventory management application focused
 7. [x] Create dedicated controller classes
 8. [ ] Implement repository pattern for data access
 9. [ ] Add request validation objects
-10. [ ] Restructure directory layout to follow industry standard MVC patterns
+10. [x] Restructure directory layout to follow industry standard MVC patterns
     - Move controllers to app/Controllers/
     - Move models to app/Models/
     - Move views to app/Views/ with subdirectories by feature
@@ -121,6 +121,8 @@ The Stock Receive System is a PHP-based inventory management application focused
     - Update all include/require paths throughout the application
     - Update nginx configuration to point to new web root
     - Maintain backward compatibility during transition
+    - Move legacy feature directories to legacy/ folder
+    - Clean up root directory from non-essential directories
 
 ### Priority 4 (Performance)
 1. Optimize database queries with proper indexing

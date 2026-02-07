@@ -62,21 +62,21 @@ class AppDispatcher
     
     private function handleInvoiceRequest($id, $action)
     {
-        // For now, delegate to original invoice pages
+        // For now, delegate to original invoice pages in legacy directory
         if ($id === 'create' && !$action) {
-            include __DIR__ . '/invoices/add.php';
+            include __DIR__ . '/legacy/invoices/add.php';
         } else {
-            include __DIR__ . '/invoices/index.php';
+            include __DIR__ . '/legacy/invoices/index.php';
         }
     }
     
     private function handleStockRecountRequest($id, $action)
     {
-        // For now, delegate to original stock recount pages
+        // For now, delegate to original stock recount pages in legacy directory
         if ($id === 'create' && !$action) {
-            include __DIR__ . '/stock_recounts/add.php';
+            include __DIR__ . '/legacy/stock_recounts/add.php';
         } else {
-            include __DIR__ . '/stock_recounts/index.php';
+            include __DIR__ . '/legacy/stock_recounts/index.php';
         }
     }
     
@@ -94,6 +94,13 @@ class AppDispatcher
             
             // Route to new controller
             $this->handleVendorRequest($id, $action);
+            return;
+        }
+        
+        // Check if it's a legacy feature route (from legacy/ directory)
+        $legacyFile = __DIR__ . '/legacy/' . $path . '.php';
+        if (file_exists($legacyFile)) {
+            include $legacyFile;
             return;
         }
         
